@@ -1,4 +1,5 @@
 #include "../../includes/env.h"
+#include <stdlib.h>  // for free
 
 void	free_env_list(t_env *env_list)
 {

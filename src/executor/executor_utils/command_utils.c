@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "../../../includes/executor.h"
+#include <unistd.h> // for access, X_OK
 
 char	*get_command_full_path(char *path, char *cmd)
 {

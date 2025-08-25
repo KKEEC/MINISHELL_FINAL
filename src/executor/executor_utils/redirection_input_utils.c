@@ -1,9 +1,17 @@
 #include "../../../includes/executor.h"
+#include <fcntl.h>   // for open, O_RDONLY, O_WRONLY, O_CREAT, O_TRUNC, O_APPEND
+#include <stdio.h>   // for perror
+#include <unistd.h>  // for close
 
 int	handle_input_file(t_redir_info *redirs, int i, int *error_occurred)
 {
 	int	fd;
 
+	if (!redirs[i].filename)
+	{
+		*error_occurred = 1;
+		return (0);
+	}
 	fd = open(redirs[i].filename, O_RDONLY);
 	if (fd == -1 && !*error_occurred)
 	{
@@ -19,6 +27,8 @@ int	handle_output_file(t_redir_info *redirs, int i, int *final_fd)
 {
 	int	fd;
 
+	if (!redirs[i].filename)
+		return (1);
 	fd = open(redirs[i].filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if (fd == -1)
 		return (perror("Output redirection Error "), 1);
@@ -33,6 +43,8 @@ int	handle_append_file(t_redir_info *redirs, int i, int *final_fd)
 {
 	int	fd;
 
+	if (!redirs[i].filename)
+		return (1);
 	fd = open(redirs[i].filename, O_WRONLY | O_CREAT | O_APPEND, 0644);
 	if (fd == -1)
 		return (perror("Output redirection Error "), 1);
@@ -56,6 +68,8 @@ int	process_redirections_in_order_with_input(t_redir_info *redirs, int count,
 	{
 		if (redirs[i].type == TOKEN_REDIR_IN)
 		{
+			if (!redirs[i].filename)
+				return (1);
 			fd = open(redirs[i].filename, O_RDONLY);
 			if (fd != -1)
 			{

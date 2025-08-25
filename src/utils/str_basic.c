@@ -16,6 +16,8 @@ size_t	ft_strlen(const char *str)
 {
 	int	i;
 
+	if (!str)
+		return (0);
 	i = 0;
 	while (str[i])
 		i++;
@@ -26,6 +28,8 @@ int	isstrequal(const char *s1, const char *s2)
 {
 	int	i;
 
+	if (!s1 || !s2)
+		return (0);
 	i = 0;
 	while (s1[i] && s2[i])
 	{

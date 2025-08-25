@@ -1,4 +1,7 @@
 #include "../../includes/env.h"
+#include <stddef.h>  // for NULL
+#include <stdlib.h>  // for free
+#include "../../includes/utils.h"  // for isstrequal
 
 void	remove_env_value(t_env **env_list, const char *key)
 {

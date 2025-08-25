@@ -3,6 +3,8 @@ int	ft_atoi(const char *str)
 	int	sign;
 	int	result;
 
+	if (!str)
+		return (0);
 	sign = 1;
 	result = 0;
 	while (*str == ' ' || (*str >= '\t' && *str <= '\r'))

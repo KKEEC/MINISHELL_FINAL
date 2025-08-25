@@ -11,10 +11,17 @@
 /* ************************************************************************** */
 
 #include "../../../includes/executor.h"
+#include <unistd.h> // close, dup2, pipe, fork, STDIN_FILENO, STDOUT_FILENO
+#include <stdio.h>  // perror, printf
+#include <signal.h> // signal, SIGINT, SIGQUIT, SIG_DFL, SIG_IGN, SIGPIPE
+#include <sys/wait.h> // waitpid, WIFSIGNALED, WTERMSIG, WIFEXITED, WEXITSTATUS
+#include <stdlib.h> // exit, EXIT_FAILURE
 
 static int	check_first_pid(pid_t pid, int *pipe_fd, t_ast *ast,
 		t_env **env_list)
 {
+	if (!pipe_fd || !ast || !env_list)
+		return (1);
 	if (pid < 0)
 	{
 		close(pipe_fd[0]);
@@ -41,6 +48,8 @@ static int	check_first_pid(pid_t pid, int *pipe_fd, t_ast *ast,
 static int	check_second_pid(pid_t pid, int *pipe_fd, t_ast *ast,
 		t_env **env_list)
 {
+	if (!pipe_fd || !ast || !env_list)
+		return (1);
 	if (pid < 0)
 	{
 		close(pipe_fd[0]);
@@ -83,6 +92,8 @@ int	execute_pipe(t_ast *ast, t_env **env_list)
 	pid_t	pid1;
 	pid_t	pid2;
 
+	if (!ast || !env_list)
+		return (1);
 	if (pipe(pipe_fd) == -1)
 	{
 		perror("pipe error");

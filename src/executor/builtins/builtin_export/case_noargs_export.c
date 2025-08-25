@@ -1,4 +1,5 @@
 #include "../../../../includes/executor.h"
+#include <stdio.h>  // for printf
 
 static char	*line_join(t_env *entry)
 {

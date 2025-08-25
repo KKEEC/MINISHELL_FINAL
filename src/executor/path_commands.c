@@ -11,9 +11,15 @@
 /* ************************************************************************** */
 
 #include "../../includes/executor.h"
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <stdio.h>
 
 static void	execute_path_command(t_ast *ast, char **envp)
 {
+	if (!ast || !ast->args || !ast->args[0])
+		return ;
 	if (access(ast->args[0], F_OK) == 0)
 	{
 		if (access(ast->args[0], X_OK) != 0)

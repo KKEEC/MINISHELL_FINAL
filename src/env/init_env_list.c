@@ -11,12 +11,17 @@
 /* ************************************************************************** */
 
 #include "../../includes/env.h"
+#include "../../includes/utils.h"  // for ft_strchr, ft_strndup, ft_strdup
+#include <stddef.h>  // for NULL
+#include <stdlib.h>  // for free
 
 static char	*extract_env_key(char *env_entry, char **equal_ptr)
 {
 	char	*equal;
 	char	*key;
 
+	if (!env_entry || !equal_ptr)
+		return (NULL);
 	equal = ft_strchr(env_entry, '=');
 	if (!equal)
 		return (NULL);

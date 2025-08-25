@@ -1,7 +1,23 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   execute_redirin.c                                  :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: kkeec <kkeec@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/08/18 00:00:00 by kkeec            #+#    #+#             */
+/*   Updated: 2025/08/18 00:00:00 by kkeec           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../../includes/executor.h"
+#include <unistd.h> // for dup, dup2, close, STDIN_FILENO, STDOUT_FILENO
+#include <stdio.h>  // for perror
 
 static int	setup_input_redir(int input_fd, int *stdin_save)
 {
+	if (!stdin_save)
+		return (1);
 	*stdin_save = dup(STDIN_FILENO);
 	if (*stdin_save == -1)
 	{
@@ -22,6 +38,8 @@ static int	setup_input_redir(int input_fd, int *stdin_save)
 
 static int	setup_output_redir(int output_fd, int *stdout_save)
 {
+	if (!stdout_save)
+		return (1);
 	*stdout_save = dup(STDOUT_FILENO);
 	if (*stdout_save == -1)
 	{
@@ -64,6 +82,8 @@ int	execute_redirin(t_ast *ast, t_env **env_list)
 	t_ast			*command_node;
 	t_redir_info	redirections[64];
 
+	if (!ast || !env_list)
+		return (1);
 	fds[0] = -1;
 	fds[1] = -1;
 	fds[2] = -1;

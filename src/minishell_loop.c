@@ -1,8 +1,22 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   minishell_loop.c                                   :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: kkeec <kkeec@student.42.fr>                +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/08/25 10:00:00 by kkeec             #+#    #+#             */
+/*   Updated: 2025/08/25 10:00:00 by kkeec            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/executor.h"
 #include "../includes/minishell.h"
 #include "../includes/parser.h"
 #include "../includes/tokenizer.h"
+#include <signal.h>
 #include <stdio.h>
+#include <readline/readline.h>
 #include <unistd.h>
 
 void	handle_signal(int sig)
@@ -16,41 +30,15 @@ void	handle_signal(int sig)
 	}
 }
 
-static t_ast	*handle_input(t_env *env_list, int *status)
-{
-	t_token	*tokens;
-	t_ast	*ast;
-	char	*input;
-
-	input = readline("minishell$ ");
-	if (!input)
-		return (NULL);
-	if (*input == '\0')
-	{
-		free(input);
-		return ((t_ast *)-1);
-	}
-	add_history(input);
-	tokens = tokenize(input, env_list, status);
-	if (!tokens)
-		return (free(input), NULL);
-	if (is_syntax_error(tokens))
-		return (free_tokens(tokens), free(input), (t_ast *)-2);
-	ast = parse_tokens(tokens);
-	free_tokens(tokens);
-	free(input);
-	return (ast);
-}
-
-void	minishell_loop(t_env *env_list, int *status)
+static void	execute_command_loop(t_env **env_list, int *status)
 {
 	t_ast	*ast;
 
-	signal(SIGQUIT, SIG_IGN);
-	signal(SIGINT, handle_signal);
+	if (!env_list || !status)
+		return ;
 	while (1)
 	{
-		ast = handle_input(env_list, status);
+		ast = handle_input(*env_list, status);
 		if (!ast)
 			break ;
 		if (ast == (t_ast *)-1)
@@ -60,7 +48,7 @@ void	minishell_loop(t_env *env_list, int *status)
 			*status = 2;
 			continue ;
 		}
-		*status = execute_ast(ast, &env_list);
+		*status = execute_ast(ast, env_list);
 		free_ast(ast);
 		if (*status >= 128)
 		{
@@ -68,4 +56,13 @@ void	minishell_loop(t_env *env_list, int *status)
 			break ;
 		}
 	}
+}
+
+void	minishell_loop(t_env *env_list, int *status)
+{
+	if (!status)
+		return ;
+	signal(SIGQUIT, SIG_IGN);
+	signal(SIGINT, handle_signal);
+	execute_command_loop(&env_list, status);
 }

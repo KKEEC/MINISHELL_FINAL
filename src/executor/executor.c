@@ -1,9 +1,23 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   executor.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: kkeec <kkeec@student.42.fr>                +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/08/25 10:00:00 by kkeec             #+#    #+#             */
+/*   Updated: 2025/08/25 10:00:00 by kkeec            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../includes/executor.h"
 #include "../../includes/minishell.h"
 #include <stdio.h>
 
 int	is_builtin(const char *cmd)
 {
+	if (!cmd)
+		return (0);
 	if (isstrequal(cmd, "echo")
 		|| isstrequal(cmd, "cd")
 		|| isstrequal(cmd, "pwd")
@@ -21,6 +35,8 @@ int	execute_builtin(t_ast *node, t_env **env_list)
 	char	**args;
 	int		status;
 
+	if (!node || !node->args || !node->args[0])
+		return (1);
 	args = node->args;
 	status = 0;
 	if (isstrequal(args[0], "echo"))
@@ -42,10 +58,28 @@ int	execute_builtin(t_ast *node, t_env **env_list)
 
 void	execute_command_node(t_ast *ast, t_env **env_list, int *status)
 {
+	if (!ast || !ast->args || !ast->args[0] || !status)
+		return ;
 	if (is_builtin(ast->args[0]))
 		*status = execute_builtin(ast, env_list);
 	else
 		*status = execute_commands(ast, env_list);
+}
+
+static int	execute_redirection(t_ast *ast, t_env **env_list)
+{
+	if (!ast || !env_list)
+		return (1);
+	if (ast->redir_type == TOKEN_REDIR_IN)
+		return (execute_redirin(ast, env_list));
+	else if (ast->redir_type == TOKEN_REDIR_OUT)
+		return (execute_redirout(ast, env_list));
+	else if (ast->redir_type == TOKEN_APPEND)
+		return (execute_append(ast, env_list));
+	else if (ast->redir_type == TOKEN_HEREDOC)
+		return (execute_heredoc(ast, env_list));
+	else
+		return (1);
 }
 
 int	execute_ast(t_ast *ast, t_env **env_list)
@@ -54,21 +88,17 @@ int	execute_ast(t_ast *ast, t_env **env_list)
 
 	status = 0;
 	if (!ast)
-		return (status);
+		return (0);
+	if (!env_list)
+		return (1);
 	if (ast->type == NODE_COMMAND)
 	{
 		if (!ast->args || !ast->args[0])
 			return (0);
 		execute_command_node(ast, env_list, &status);
 	}
-	else if (ast->type == NODE_REDIR && ast->redir_type == TOKEN_REDIR_IN)
-		status = execute_redirin(ast, env_list);
-	else if (ast->type == NODE_REDIR && ast->redir_type == TOKEN_REDIR_OUT)
-		status = execute_redirout(ast, env_list);
-	else if (ast->type == NODE_REDIR && ast->redir_type == TOKEN_APPEND)
-		status = execute_append(ast, env_list);
-	else if (ast->type == NODE_REDIR && ast->redir_type == TOKEN_HEREDOC)
-		status = execute_heredoc(ast, env_list);
+	else if (ast->type == NODE_REDIR)
+		status = execute_redirection(ast, env_list);
 	else if (ast->type == NODE_PIPE)
 		status = execute_pipe(ast, env_list);
 	else

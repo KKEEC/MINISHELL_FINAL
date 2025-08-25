@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include "../../../includes/parser.h"
 
 void	print_indent(int depth)

@@ -11,6 +11,9 @@
 /* ************************************************************************** */
 
 #include "../../includes/env.h"
+#include "../../includes/utils.h"  // for ft_strdup
+#include <stddef.h>  // for NULL
+#include <stdlib.h>  // for malloc, free
 
 static int	set_node_value(t_env *node, char *value)
 {

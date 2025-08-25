@@ -10,7 +10,7 @@ SRC = ./src/main.c ./src/minishell_loop.c \
 ./src/utils/str_utils.c ./src/utils/str_basic.c ./src/utils/str_char.c ./src/utils/ft_strchr.c ./src/utils/ft_strjoin.c \
 ./src/utils/ft_printstderr.c ./src/utils/ft_strcpy.c \
 ./src/utils/ft_strnstr.c ./src/utils/ft_isschar.c ./src/utils/ft_isspace.c \
-./src/utils/ft_atoi.c ./src/utils/ft_strcmp.c  ./src/utils/sort_string_array.c ./src/utils/token_utils.c \
+./src/utils/ft_atoi.c ./src/utils/ft_strcmp.c  ./src/utils/sort_string_array.c ./src/utils/token_utils.c ./src/utils/loop_utils.c \
 ./src/tokenizer/tokenizer.c \
 ./src/tokenizer/tokenize_utils.c \
 ./src/tokenizer/tokenize_core.c \

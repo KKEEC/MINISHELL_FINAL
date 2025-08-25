@@ -32,6 +32,8 @@ t_token	*create_token(t_token_type type, const char *input)
 {
 	t_token	*token;
 
+	if (!input)
+		return (NULL);
 	token = malloc(sizeof(t_token));
 	if (!token)
 		return (NULL);

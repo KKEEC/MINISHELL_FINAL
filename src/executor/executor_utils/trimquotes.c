@@ -21,6 +21,8 @@ char	*trimquotes(char *value)
 	int		new_len;
 	int		val_len;
 
+	if (!value)
+		return (NULL);
 	i = 0;
 	val_len = (int)ft_strlen(value);
 	if ((value[0] == '"' && value[val_len - 1] == '"')
