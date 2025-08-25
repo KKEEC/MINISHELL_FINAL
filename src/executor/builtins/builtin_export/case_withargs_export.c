@@ -15,6 +15,8 @@ char	*extract_key(char *str)
 		key = ft_substr(str, 0, equal - str);
 	else
 		key = ft_strdup(str);
+	if (!key)
+		return (NULL);
 	return (key);
 }
 
@@ -26,11 +28,18 @@ void	handle_plus_equal(char *plus_equal, char *key, t_env **env_list)
 	char	*newval;
 
 	value = ft_strdup(plus_equal + 2);
+	if (!value)
+		return ;
 	trimval = trimquotes(value);
 	existing = get_env_value(*env_list, key);
 	if (existing)
 	{
 		newval = ft_strjoin(existing, trimval);
+		if (!newval)
+		{
+			free(value);
+			return ;
+		}
 		update_env(env_list, key, newval);
 		free(newval);
 	}
@@ -45,6 +54,8 @@ void	handle_equal(char *equal, char *key, t_env **env_list)
 	char	*newval;
 
 	value = ft_strdup(equal + 1);
+	if (!value)
+		return ;
 	newval = trimquotes(value);
 	update_env(env_list, key, newval);
 	free(value);
@@ -82,6 +93,11 @@ int	case_withargs_export(char **args, t_env **env_list)
 	{
 		key = NULL;
 		key = extract_key(args[i]);
+		if (!key)
+		{
+			i++;
+			continue ;
+		}
 		if (!is_valid_key(args[i]))
 		{
 			print_err_key(args[i]);

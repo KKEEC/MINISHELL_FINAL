@@ -3,6 +3,8 @@
 
 #include <stdlib.h>
 
+typedef enum e_token_type	t_token_type;
+
 size_t  ft_strlen(const char *str);
 int ft_isalpha(const char c);
 int ft_isspace(const char c);
@@ -26,6 +28,7 @@ void ft_printstderr(const char *str);
 
 void sort_string_array(char **arr, int size);
 
+int	is_operator(t_token_type type);
 
 
 # endif

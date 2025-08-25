@@ -1,59 +1,67 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   init_env_list.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: kkeec <kkeec@student.42.fr>                +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/08/25 10:00:00 by kkeec             #+#    #+#             */
+/*   Updated: 2025/08/25 10:00:00 by kkeec            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../includes/env.h"
 
-t_env	*new_env_node(char *key, char *value)
+static char	*extract_env_key(char *env_entry, char **equal_ptr)
 {
-	t_env	*node;
+	char	*equal;
+	char	*key;
 
-	node = malloc(sizeof(t_env));
-	if (!node)
+	equal = ft_strchr(env_entry, '=');
+	if (!equal)
 		return (NULL);
-	node->key = ft_strdup(key);
-	if (value)
-		node->value = ft_strdup(value);
-	else
-		node->value = NULL;
-	node->next = NULL;
-	return (node);
+	*equal_ptr = equal;
+	key = ft_strndup(env_entry, (equal - env_entry));
+	return (key);
 }
 
-void	add_env_node(t_env **env_list, t_env *new_node)
+static int	process_env_entry(char *env_entry, t_env **env_list)
 {
-	t_env	*temp;
+	char	*equal;
+	char	*key;
+	char	*value;
+	t_env	*new_node;
 
-	if (!*env_list)
-		*env_list = new_node;
-	else
+	if (!env_entry || !env_list)
+		return (0);
+	key = extract_env_key(env_entry, &equal);
+	if (!key)
+		return (0);
+	value = ft_strdup(equal + 1);
+	if (!value)
 	{
-		temp = *env_list;
-		while (temp->next)
-			temp = temp->next;
-		temp->next = new_node;
+		free(key);
+		return (0);
 	}
+	new_node = new_env_node(key, value);
+	free(key);
+	free(value);
+	if (!new_node)
+		return (0);
+	add_env_node(env_list, new_node);
+	return (1);
 }
 
 t_env	*init_env_list(char **envp, t_env **env_list)
 {
-	t_env	*new_node;
-	int		i;
-	char	*equal;
-	char	*key;
-	char	*value;
+	int	i;
 
+	if (!envp || !env_list)
+		return (NULL);
 	i = 0;
 	while (envp[i])
 	{
-		equal = ft_strchr(envp[i], '=');
-		if (!equal)
-		{
-			i++;
-			continue ;
-		}
-		key = ft_strndup(envp[i], (equal - envp[i]));
-		value = ft_strdup(equal + 1);
-		new_node = new_env_node(key, value);
-		free(key);
-		free(value);
-		add_env_node(env_list, new_node);
+		process_env_entry(envp[i], env_list);
 		i++;
 	}
 	return (*env_list);

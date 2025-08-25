@@ -54,6 +54,13 @@ int	handle_word_accumulation(t_tokenize_ctx *ctx)
 		*ctx->acc = ft_strjoin(*ctx->acc, part);
 	else
 		*ctx->acc = ft_strdup(part);
+	if (!*ctx->acc)
+	{
+		free(old_acc);
+		free(part);
+		free_tokens(*ctx->tokens);
+		return (0);
+	}
 	free(old_acc);
 	free(part);
 	return (1);
@@ -76,6 +83,13 @@ int	handle_quote_accumulation(t_tokenize_ctx *ctx)
 		*ctx->acc = ft_strjoin(*ctx->acc, part);
 	else
 		*ctx->acc = ft_strdup(part);
+	if (!*ctx->acc)
+	{
+		free(old_acc);
+		free(part);
+		free_tokens(*ctx->tokens);
+		return (0);
+	}
 	free(old_acc);
 	free(part);
 	return (1);

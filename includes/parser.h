@@ -35,7 +35,6 @@ int is_syntax_error(t_token *token);
 int is_redirection(t_token_type type);
 
 // Syntax error utilities
-int	is_operator(t_token_type type);
 int	handle_pipe_redir_error(t_token *token);
 void	write_token_error(t_token *token);
 void	write_pipe_in_error(t_token *token);

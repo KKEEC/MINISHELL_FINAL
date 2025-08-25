@@ -48,6 +48,11 @@ t_ast	*new_redir_node(int redir_type, const char *filename, t_ast *cmd)
 	node->type = NODE_REDIR;
 	node->redir_type = redir_type;
 	node->filename = ft_strdup(filename);
+	if (!node->filename)
+	{
+		free(node);
+		return (NULL);
+	}
 	node->left = cmd;
 	node->right = NULL;
 	node->args = NULL;

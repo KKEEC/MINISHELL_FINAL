@@ -10,7 +10,7 @@ SRC = ./src/main.c ./src/minishell_loop.c \
 ./src/utils/str_utils.c ./src/utils/str_basic.c ./src/utils/str_char.c ./src/utils/ft_strchr.c ./src/utils/ft_strjoin.c \
 ./src/utils/ft_printstderr.c ./src/utils/ft_strcpy.c \
 ./src/utils/ft_strnstr.c ./src/utils/ft_isschar.c ./src/utils/ft_isspace.c \
-./src/utils/ft_atoi.c ./src/utils/ft_strcmp.c  ./src/utils/sort_string_array.c\
+./src/utils/ft_atoi.c ./src/utils/ft_strcmp.c  ./src/utils/sort_string_array.c ./src/utils/token_utils.c \
 ./src/tokenizer/tokenizer.c \
 ./src/tokenizer/tokenize_utils.c \
 ./src/tokenizer/tokenize_core.c \
@@ -57,7 +57,7 @@ SRC = ./src/main.c ./src/minishell_loop.c \
 ./src/executor/executor_utils/env_utils.c \
 ./src/executor/executor_utils/command_utils.c \
 ./src/executor/executor_utils/export_utils.c \
-./src/env/init_env_list.c ./src/env/get_env_value.c ./src/env/update_env.c \
+./src/env/init_env_list.c ./src/env/env_list_utils.c ./src/env/get_env_value.c ./src/env/update_env.c \
 ./src/env/remove_env_value.c ./src/env/env_list_size.c ./src/env/free_env_list.c \
 
 OBJ = $(SRC:.c=.o)

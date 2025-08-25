@@ -14,17 +14,6 @@
 #include "../../../includes/utils.h"
 #include <unistd.h>
 
-int	is_operator(t_token_type type)
-{
-	if (type == TOKEN_PIPE
-		|| type == TOKEN_REDIR_IN
-		|| type == TOKEN_REDIR_OUT
-		|| type == TOKEN_APPEND
-		|| type == TOKEN_HEREDOC)
-		return (1);
-	return (0);
-}
-
 void	write_pipe_in_error(t_token *token)
 {
 	if (token->next->next && token->next->next->type == TOKEN_PIPE)
@@ -50,23 +39,50 @@ void	write_token_error(t_token *token)
 			45);
 }
 
-int	handle_pipe_redir_error(t_token *token)
+int	handle_pipe_out_append_error(t_token *token)
 {
 	t_token	*check;
 
-	if (token->type == TOKEN_PIPE && (token->next->type == TOKEN_REDIR_OUT
-			|| token->next->type == TOKEN_APPEND))
+	check = token->next->next;
+	if (check && check->type == TOKEN_WORD)
+		return (0);
+	if (check && check->type == TOKEN_APPEND)
 	{
-		check = token->next->next;
-		if (check && check->type == TOKEN_WORD)
-			return (0);
-		if (token->next->type == TOKEN_APPEND)
-			write(STDERR_FILENO, " syntax error near unexpected token `>>'\n",
-				40);
-		else
-			write(STDERR_FILENO,
-				" syntax error near unexpected token `newline'\n", 45);
+		write(STDERR_FILENO, " syntax error near unexpected token `>>'\n",
+			40);
 		return (1);
 	}
+	if (token->next->type == TOKEN_APPEND)
+		write(STDERR_FILENO, " syntax error near unexpected token `>>'\n",
+			40);
+	else
+		write(STDERR_FILENO,
+			" syntax error near unexpected token `newline'\n", 45);
+	return (1);
+}
+
+int	handle_pipe_redir_in_error(t_token *token)
+{
+	t_token	*check;
+
+	check = token->next->next;
+	if (check && check->type == TOKEN_WORD)
+		return (0);
+	if (check && check->type == TOKEN_PIPE)
+		write(STDERR_FILENO, " syntax error near unexpected token `|'\n",
+			39);
+	else
+		write(STDERR_FILENO, " syntax error near unexpected token `<'\n",
+			39);
+	return (1);
+}
+
+int	handle_pipe_redir_error(t_token *token)
+{
+	if (token->type == TOKEN_PIPE && (token->next->type == TOKEN_REDIR_OUT
+			|| token->next->type == TOKEN_APPEND))
+		return (handle_pipe_out_append_error(token));
+	if (token->type == TOKEN_PIPE && token->next->type == TOKEN_REDIR_IN)
+		return (handle_pipe_redir_in_error(token));
 	return (-1);
 }

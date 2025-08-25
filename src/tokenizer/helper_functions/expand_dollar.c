@@ -20,6 +20,8 @@ char	*expanddollar(const char *str, t_env *env_list, int *status)
 
 	tstr = (char *)str;
 	result = ft_strdup("");
+	if (!result)
+		return (NULL);
 	while (*tstr)
 	{
 		if (*tstr == '$')
